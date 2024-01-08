@@ -1,6 +1,6 @@
 import './App.css';
 import { Bar } from '@ant-design/charts';
-import { Card } from 'antd';
+import { Card, Layout, Menu } from 'antd';
 import { Column } from '@ant-design/plots';
 import firebase from 'firebase/app';
 import 'firebase/database';
@@ -9,6 +9,7 @@ import { initializeApp } from "firebase/app";
 import { getAttendance } from './utils/firebase';
 import { DocumentData } from 'firebase/firestore';
 import Dashboard from './view/dashboard';
+import { Content, Header } from 'antd/es/layout/layout';
 
 
 type AttendanceData = {
@@ -42,9 +43,24 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Dashboard />
-    </div>
+    <Layout style={{ minHeight: '100vh' }}>
+      <div>
+        {/* Fixed Top Bar */}
+        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+          <div className="logo" />
+          <div style={{ color: 'white' }}>{"Hall 4 Analytics"}</div>
+        </Header>
+      </div>
+
+      <div style={{ paddingTop: 64 }}>
+        {/* Content Below the Top Bar */}
+        <Content className="site-layout" style={{ padding: '0 50px' }}>
+          <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
+            <Dashboard />
+          </div>
+        </Content>
+      </div>
+    </Layout>
   );
 
 }
