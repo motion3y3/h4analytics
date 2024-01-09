@@ -10,11 +10,11 @@ import moment from 'moment-timezone';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
+import MonthSelection from './dateSelection';
 
 const { Option } = Select;
 
 function Dashboard() {
-  const [selectedKey, setSelectedKey] = useState('1');
   const [attendanceData, setAttendanceData] = useState<DocumentData[]>([]);
   const [usersData, setUsers] = useState<DocumentData[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
@@ -94,8 +94,8 @@ function Dashboard() {
     : [null, null];
 
   // Format the dates as "DD/MM - DD/MM"
-  const formattedStartDate = startDate?.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
-  const formattedEndDate = endDate?.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
+  const formattedStartDate = startDate?.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year:'numeric' });
+  const formattedEndDate = endDate?.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year:'numeric' });
 
 
   // Filter the attendance data based on the selected month
@@ -144,8 +144,6 @@ function Dashboard() {
 
   console.log(combinedData)
 
-
-  // Ant Design chart configuration
   const config = {
     data,
     xField: 'meeting',
@@ -212,77 +210,39 @@ function Dashboard() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider width={200} style={{ backgroundColor: '#f0f0f0' }}>
-        <Menu mode="vertical" selectedKeys={[selectedKey]} defaultSelectedKeys={['1']}>
-          <Menu.Item key="1">Report</Menu.Item>
-          <Menu.Item key="2">Saints Namelist</Menu.Item>
-          <Menu.Item key="3">Serving Ones</Menu.Item>
-        </Menu>
-      </Sider>
-      <Content>
-        <Row>
-          <Col span={24}>
-            <Row align="middle" style={{ marginBottom: '10px' }}>
-              <label htmlFor="monthSelect" style={{ marginRight: '10px' }}>Report: </label>
-              <Select
-                style={{ width: 150, marginRight: '10px' }}
-                placeholder="Select a week"
-                onChange={handleWeekChange}
-                value={selectedWeek}
-              >
-                <Option value={1}>Week 1</Option>
-                <Option value={2}>Week 2</Option>
-                <Option value={3}>Week 3</Option>
-                <Option value={4}>Week 4</Option>
-                <Option value={5}>Week 5</Option>
-                <Option value={6}>All Week</Option>
-              </Select>
-              <Select
-                style={{ width: 150, marginRight: '10px' }}
-                placeholder="Select a month"
-                onChange={handleMonthChange}
-                value={selectedMonth}
-              >
-                <Option value={0}>January</Option>
-                <Option value={1}>February</Option>
-                <Option value={2}>March</Option>
-                <Option value={3}>April</Option>
-                <Option value={4}>May</Option>
-                <Option value={5}>June</Option>
-                <Option value={6}>July</Option>
-                <Option value={7}>August</Option>
-                <Option value={8}>September</Option>
-                <Option value={9}>October</Option>
-                <Option value={10}>November</Option>
-                <Option value={11}>December</Option>
-              </Select>
-              <Select
-                style={{ width: 100 }}
-                placeholder="Select a year"
-                onChange={handleYearChange}
-                value={selectedYear}
-              >
-                <Option value={2023}>2023</Option>
-                <Option value={2024}>2024</Option>
-              </Select>
-            </Row>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <Card title={`KL Hall 4 Attendance || ${formattedStartDate} - ${formattedEndDate}`}>
-              <Column {...config} />
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <div style={{ padding: 20 }}>
-              <Table dataSource={combinedData} columns={columns} />
-            </div>
-          </Col>
-        </Row>
-      </Content>
+      <Layout>
+        <Content style={{ padding: '0 24px', minHeight: '100vh' }}>
+          <Row>
+            <Col span={24}>
+              <Row align="middle" style={{ marginBottom: '10px' }}>
+                <label htmlFor="monthSelect" style={{ marginRight: '10px' }}>Report: </label>
+                <MonthSelection
+                  selectedMonth={selectedMonth}
+                  handleMonthChange={handleMonthChange}
+                  selectedYear={selectedYear}
+                  handleYearChange={handleYearChange}
+                  selectedWeek={selectedWeek}
+                  handleWeekChange={handleWeekChange}
+                />
+              </Row>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Card title={`Date: ${formattedStartDate} - ${formattedEndDate}`}>
+                <Column {...config} />
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <div style={{ padding: 20 }}>
+                <Table dataSource={combinedData} columns={columns} />
+              </div>
+            </Col>
+          </Row>
+        </Content>
+      </Layout>
     </Layout>
   );
 }

@@ -10,6 +10,7 @@ import { getAttendance } from './utils/firebase';
 import { DocumentData } from 'firebase/firestore';
 import Dashboard from './view/dashboard';
 import { Content, Header } from 'antd/es/layout/layout';
+import Sider from 'antd/es/layout/Sider';
 
 
 type AttendanceData = {
@@ -32,6 +33,11 @@ const app = initializeApp(firebaseConfig);
 
 function App() {
   const [attendanceData, setAttendanceData] = useState<DocumentData[]>([]);
+  const [selectedKey, setSelectedKey] = useState("1");
+
+  const handleSelectedKeyChange = (info: { key: React.Key; keyPath: React.Key[]; item: React.ReactInstance }) => {
+    setSelectedKey(info.key.toString());
+  };
 
   useEffect(() => {
     const getAttendanceMap = async () => {
@@ -44,22 +50,26 @@ function App() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <div>
-        {/* Fixed Top Bar */}
-        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-          <div className="logo" />
-          <div style={{ color: 'white' }}>{"Hall 4 Analytics"}</div>
-        </Header>
-      </div>
+      <Header style={{ backgroundColor: '#001529', color: 'white' }}>
+        <div className="logo" />
+        <div style={{ color: 'white' }}>{"Hall 4 Analytics"}</div>
+      </Header>
 
-      <div style={{ paddingTop: 64 }}>
-        {/* Content Below the Top Bar */}
-        <Content className="site-layout" style={{ padding: '0 50px' }}>
+      <Layout>
+        <Sider width={200} style={{ backgroundColor: '#f0f0f0' }}>
+          <Menu mode="vertical" selectedKeys={[selectedKey]} defaultSelectedKeys={['1']}>
+            <Menu.Item key="1">Report</Menu.Item>
+            <Menu.Item key="2">Saints Namelist</Menu.Item>
+            <Menu.Item key="3">Serving Ones</Menu.Item>
+          </Menu>
+        </Sider>
+
+        <Content style={{ padding: '0 50px', marginTop: 64 }}>
           <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
             <Dashboard />
           </div>
         </Content>
-      </div>
+      </Layout>
     </Layout>
   );
 
